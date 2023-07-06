@@ -16,24 +16,29 @@ module.exports = () => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: "./src/index.html",
+        template: "./index.html",
         filename: "index.html",
       }),
       new WebpackPwaManifest({
+        fingerprints: false,
+        inject: true,
         name: "My Progressive Web App",
         short_name: "MyPWA",
         description: "My awesome Progressive Web App!",
         background_color: "#ffffff",
-        crossorigin: "use-credentials", //can be null, use-credentials or anonymous
+        publicPath: "/",
+        start_url: "/",
         icons: [
           {
-            src: path.resolve("src/image/logo.png"),
+            src: path.resolve("src/images/logo.png"),
             sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+            destination: path.join("assets", "icons"),
           },
         ],
       }),
       new InjectManifest({
         swSrc: "./src-sw.js",
+        swDest: "src-sw.js",
       }),
     ],
     module: {
@@ -49,6 +54,10 @@ module.exports = () => {
             loader: "babel-loader",
             options: {
               presets: ["@babel/preset-env"],
+              plugins: [
+                "@babel/plugin-proposal-object-rest-spread",
+                "@babel/transform-runtime",
+              ],
             },
           },
         },
